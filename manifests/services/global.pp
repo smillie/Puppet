@@ -1,19 +1,20 @@
 class global {
 
-	$users_auth = 'ldap'
-	$users_ldap_servers = ['ldap.geeksoc.org']
-	$users_ldap_basedn = 'dc=geeksoc,dc=org'
-	$users_ldap_ssl = 'yes'
-	$syslog_server = 'picon.geeksoc.org'
+    $users_auth = 'ldap'
+    $users_ldap_servers = ['ldap.geeksoc.org']
+    $users_ldap_basedn = 'dc=geeksoc,dc=org'
+    $users_ldap_ssl = 'yes'
+    $syslog_server = 'picon.geeksoc.org'
 
-	include users
-	include sudo
+    include users
+    include sudo
     include ssh::sshd
     include ssh::known_hosts
-	include munin::node
-	include rsyslog
-	include fail2ban
+    include munin::node
+    include rsyslog
+    include fail2ban
     include resolv
+    include puppet
 
     resolv_conf { "geeksoc.org":
         domainname  => "geeksoc.org",
@@ -29,39 +30,26 @@ class global {
         autoupdate    => false,
     }
 
-	cron { "run-puppet":
-		command => "/usr/bin/puppet agent --test > /dev/null",
-		minute  => inline_template("<%= hostname.hash.abs % 30 %>"),
-	}
-	cron { "run-puppet2":
-		command => "/usr/bin/puppet agent --test > /dev/null",
-		minute  => inline_template("<%= hostname.hash.abs % 30 + 30 %>"),
-	}
-	service { "puppet":
-		ensure => stopped,
-		enable => false,
-	}
 
-	###################
-	# Global Packages #
-	###################
-	case $::operatingsystem {
+    # Global Packages
+    case $::operatingsystem {
         debian, ubuntu: {
             $vim_name = "vim"
-			$netcat_name = "netcat"
+            $netcat_name = "netcat"
         }
         centos, redhat: {
             $vim_name = "vim-enhanced"
-			$netcat_name = "nc"
+            $netcat_name = "nc"
         }
     }
-
     package { [ "screen",
                 "tmux",
                 "git",
                 "bash-completion",
                 "htop",
-				"${netcat_name}",
+                "nmap",
+                "mutt".
+                "${netcat_name}",
                 "${vim_name}", ]:
         ensure => installed,
     }
