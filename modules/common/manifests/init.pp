@@ -23,6 +23,7 @@ class common {
         /^4/  => "etch",
         /^5/  => "lenny",
         /^6/  => "squeeze",
+        /^7/  => "wheezy",
         "8.04"  => "hardy",
         "8.10"  => "intrepid",
         "9.04"  => "jaunty",

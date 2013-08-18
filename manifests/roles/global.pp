@@ -30,6 +30,12 @@ class global {
                            'ntp3.net.strath.ac.uk', ],
         autoupdate    => false,
     }
+    
+    class {"pam_ldap":
+      servers => ['ldap.geeksoc.org'],
+      basedn => 'dc=geeksoc,dc=org',
+      ssl => true
+    }
 
 	cron { "run-puppet":
 		command => "/usr/bin/puppet agent --test > /dev/null",
